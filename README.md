@@ -117,7 +117,7 @@ print(lf.Q)  # 無効電力
 
 これを用いると、全ての設定をそのままに、`ps.P` などだけを更新して `lf.calculate()` を行うのを繰り返せば、異なる消費電力に対しての計算結果が効率的に、容易に得られる。
 
-以下では実際に内部でどのような動作をしているのかを見ていく。ただし、レジスタンスなどの行列を自動で対称行列にするテクニックなどの技巧的なことはここでは説明しない。そのような説明は [LOADFLOW_DETAILS.md] を参照。
+以下では実際に内部でどのような動作をしているのかを見ていく。ただし、レジスタンスなどの行列を自動で対称行列にするテクニックなどの技巧的なことはここでは説明しない。そのような説明は [LOADFLOW_DETAILS.md](https://github.com/denshisujikken-theme-B/chouryu-keisan/blob/main/LOADFLOW_DETAILS.md) を参照。
 
 ### PowerSystem クラス
 
