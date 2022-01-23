@@ -16,7 +16,6 @@
     - numpy
     - pygame
     - loadflow
-        - numpy
     - getdata
         - numpy
     - draw_graph
