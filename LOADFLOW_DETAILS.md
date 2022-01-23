@@ -1,6 +1,6 @@
 # loadflow の詳細
 
-`loadflow` の全てを理解できるように書いた
+`loadflow` の全てを理解できるように書いた。ここで全てを解説するわけではなく、README.md に書いたものを補足するものである。
 
 #### クラスについて(クラスが分からない場合)
 
@@ -122,4 +122,16 @@ sum(xlist)
 `Y` は、nxn の全成分が0の複素行列で初期化し、対角成分それぞれに `_Y_diag`、非対角成分に `_Y_nondiag` を足し合わせたものを返す。
 `np.diag_indices` により、対角成分のインデックスを取得することができる。これより、全ての対角成分に `_Y_diag` を足すことができる。`np.eye` により、単位行列を作成でき、`np.where(条件, True の時の戻り値, False の時の戻り値)` という構文によって、`_Y_nondiag` の値を非対角成分にだけ足すことができる。
 
-`_initialize_vec` は、既知の P, Q のベクトル `_p` と未知の V, theta のベクトル `_v`、また、
+`_initialize_vec` は、既知の P, Q のベクトル `_p` と未知の V, theta のベクトル `_v`、また、それらのベクトルの要素の内容を格納した配列、`_p_content, _v_content` を初期化する。具体的には、`PowerSystem.P, PowerSystem.Q, PowerSystem.V, PowerSystem.theta` の配列を走査して、デフォルト値の `None` であるかを判定することにより、値が既知になっているかを判断して、`_p` などに値を格納する。`_p_content` などには `(配列名, インデックス)` の形式で PowerSystem クラスの配列、`P, Q, V, theta`、のどの配列の、また、どのインデックスの値を格納したのかをタプルとして記録している。
+
+## LoadFlow クラス
+
+`calculate` メソッドについて説明する。
+
+`calculate` メソッドにより、このクラスのプロパティとして、`LoadFlow.V, LoadFlow.theta, LoadFlow.power` が設定される。`LoadFlow.P, LoadFlow.Q` は `LoadFlow.power` の実部と虚部である。
+
+`LoadFlow.V, LoadFlow.theta` を求めるために、その値を決める元になる変数が `V, theta` である。これらはまず、`PowerSystem` クラスの `V, theta` から、それぞれ `None` を 1, 0, に置き換えた配列を numpy 配列として置き換えたもので初期化している。
+
+その後、`_initialize_vec` を実行し、それによって作成された配列のサイズを `n_p` に代入している。また、こうして作られた配列を元に、`v, p, fnc_v` を初期化している。これらは (n_p)x1 の numpy 配列である。`fnc_v` は以降のループ内で毎回初期化されるのであるが、ループを開始する条件の中に含まれる変数のため、ループ外のここでも一度初期化される。ループの目標としては `fnc_v == p` に近づけることになる。
+
+`fnc_v` には `V, theta` の情報が含まれる。
